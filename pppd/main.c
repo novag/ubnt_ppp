@@ -124,7 +124,7 @@
 static const char rcsid[] = RCSID;
 
 /* interface vars */
-char ifname[32];		/* Interface name */
+char ifname[MAXIFNAMELEN];	/* Interface name */
 int ifunit;			/* Interface unit number */
 int bundle_unit=-1;		/* Unit for Master device */
 int multilink_in_bundle=0;	/* Are we in multilink bundle */
@@ -302,13 +302,6 @@ struct protent *protocols[] = {
     &eap_protent,
     NULL
 };
-
-/*
- * If PPP_DRV_NAME is not defined, use the default "ppp" as the device name.
- */
-#if !defined(PPP_DRV_NAME)
-#define PPP_DRV_NAME	"ppp"
-#endif /* !defined(PPP_DRV_NAME) */
 
 int
 main(argc, argv)
@@ -788,7 +781,6 @@ void
 set_ifunit(iskey)
     int iskey;
 {
-    info("Using interface %s%d", PPP_DRV_NAME, ifunit);
     /* UBNT: There is some mess with the ifname in pppd, we won't change this.
      *       But once we come here at the moment ppp becomes active, the name
      *       is valid (however we corrupt it couple lines below). We use this
@@ -796,7 +788,11 @@ set_ifunit(iskey)
      */
     if (iskey)
         ubnt_pidfile_update(getpid(), user, ifname);
-    slprintf(ifname, sizeof(ifname), "%s%d", PPP_DRV_NAME, ifunit);
+    if (req_ifname[0] != '\0')
+	slprintf(ifname, sizeof(ifname), "%s", req_ifname);
+    else
+	slprintf(ifname, sizeof(ifname), "%s%d", PPP_DRV_NAME, ifunit);
+    info("Using interface %s", ifname);
     script_setenv("IFNAME", ifname, iskey);
     if (iskey) {
 	create_pidfile(getpid());	/* write pid to file */
