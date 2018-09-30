@@ -1,0 +1,2 @@
+vyatta-ppp: file-in-etc-not-marked-as-conffile
+vyatta-ppp: binary-without-manpage

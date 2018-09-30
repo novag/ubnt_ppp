@@ -1,0 +1,35 @@
+#!/bin/sh
+# 
+# Module: pallon
+# 
+# **** License ****
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+# 
+# This code was originally developed by Vyatta, Inc.
+# Portions created by Vyatta are Copyright (C) 2006, 2007 Vyatta, Inc.
+# All Rights Reserved.
+# 
+# Author: Rick Balocca
+# Date: 2007
+# Description:
+# 
+# **** End License ****
+
+# first make sure that all pppd's are stopped
+poff -a 2>/dev/null >/dev/null
+
+# now start them all back up
+for i in `cd /etc/ppp/peers; ls wan* 2>/dev/null`
+do
+#	echo -n "STARTED ">>/var/log/$i.log
+#	date>>/var/log/$i.log
+#	pon $i >>/var/log/$i.log&
+	pon $i > /dev/null &
+done
